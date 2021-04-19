@@ -13,6 +13,7 @@ pub struct InitAuthResponse {
 
 #[derive(Serialize)]
 pub struct PollAuthRequest {
+  pub key_id: String,
   pub request_id: String,
 }
 

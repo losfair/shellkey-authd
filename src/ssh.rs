@@ -91,7 +91,7 @@ impl SSHAgentHandler for Handler {
       key_id: base64::encode(&hash[..]),
       sign_data: base64::encode(&data),
     };
-    let res = client.post(&format!("{}/init_auth", api_prefix))
+    let res = client.post(&format!("{}/v1/auth/init", api_prefix))
       .body(serde_json::to_vec(&init_req).unwrap())
       .send()
       .map_err(|_| "init_auth failed")?;
@@ -103,11 +103,12 @@ impl SSHAgentHandler for Handler {
     ).map_err(|_| "init_auth response body decode failed")?;
 
     let poll_req = PollAuthRequest {
+      key_id: base64::encode(&hash[..]),
       request_id: init_response.request_id.clone(),
     };
     let signature = loop {
       std::thread::sleep(Duration::from_secs(3));
-      let res = client.post(&format!("{}/poll_auth", api_prefix))
+      let res = client.post(&format!("{}/v1/auth/poll", api_prefix))
         .body(serde_json::to_vec(&poll_req).unwrap())
         .send()
         .map_err(|_| "poll_auth failed")?;
