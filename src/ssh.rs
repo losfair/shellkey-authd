@@ -88,7 +88,7 @@ impl SSHAgentHandler for Handler {
 
     let client = reqwest::blocking::Client::new();
     let init_req = InitAuthRequest {
-      pubkey_hash: base64::encode(&hash[..]),
+      key_id: base64::encode(&hash[..]),
       sign_data: base64::encode(&data),
     };
     let res = client.post(&format!("{}/init_auth", api_prefix))
