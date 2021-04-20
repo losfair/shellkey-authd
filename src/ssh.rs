@@ -108,8 +108,10 @@ impl SSHAgentHandler for Handler {
       key_id: key_id.clone(),
       challenge: base64::encode(&data),
     };
+    debug!("init_req: {:?}", init_req);
     let res = client
       .post(&format!("{}/v1/auth/init", api_prefix))
+      .header("Content-Type", "application/json")
       .body(serde_json::to_vec(&init_req).unwrap())
       .send()
       .map_err(|_| "init_auth failed")?;
@@ -128,6 +130,7 @@ impl SSHAgentHandler for Handler {
       std::thread::sleep(Duration::from_secs(3));
       let res = client
         .post(&format!("{}/v1/auth/poll", api_prefix))
+        .header("Content-Type", "application/json")
         .body(serde_json::to_vec(&poll_req).unwrap())
         .send()
         .map_err(|_| "poll_auth failed")?;

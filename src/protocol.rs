@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct InitAuthRequest {
   pub key_id: String,
   pub challenge: String,
