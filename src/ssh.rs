@@ -81,6 +81,7 @@ impl SSHAgentHandler for Handler {
     let mut hasher = Sha256::new();
     hasher.update(&pubkey);
     let hash = hasher.finalize();
+    let key_id = base64::encode(&hash[..]);
 
     let api_prefix = config.api_prefix.clone();
 
@@ -88,8 +89,8 @@ impl SSHAgentHandler for Handler {
 
     let client = reqwest::blocking::Client::new();
     let init_req = InitAuthRequest {
-      key_id: base64::encode(&hash[..]),
-      sign_data: base64::encode(&data),
+      key_id: key_id.clone(),
+      challenge: base64::encode(&data),
     };
     let res = client.post(&format!("{}/v1/auth/init", api_prefix))
       .body(serde_json::to_vec(&init_req).unwrap())
@@ -103,7 +104,7 @@ impl SSHAgentHandler for Handler {
     ).map_err(|_| "init_auth response body decode failed")?;
 
     let poll_req = PollAuthRequest {
-      key_id: base64::encode(&hash[..]),
+      key_id,
       request_id: init_response.request_id.clone(),
     };
     let signature = loop {

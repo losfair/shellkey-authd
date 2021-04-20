@@ -3,7 +3,7 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize)]
 pub struct InitAuthRequest {
   pub key_id: String,
-  pub sign_data: String,
+  pub challenge: String,
 }
 
 #[derive(Deserialize)]
