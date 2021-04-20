@@ -1,8 +1,8 @@
+use anyhow::Result;
+use shellkey_authd::ssh::{parse_identities, SshConfig};
+use std::os::unix::net::UnixListener;
 use std::path::PathBuf;
 use structopt::StructOpt;
-use anyhow::Result;
-use shellkey_authd::ssh::{SshConfig, parse_identities};
-use std::os::unix::net::UnixListener;
 
 /// SSH authentication daemon for ShellKey.
 #[derive(StructOpt, Debug)]
