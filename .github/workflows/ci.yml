@@ -4,8 +4,8 @@ on:
 - push
 
 jobs:
-  build:
-    name: Build
+  build-linux:
+    name: Build (Linux)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,11 +20,28 @@ jobs:
       - name: Install musl-tools
         run: sudo apt install -y musl-tools
       - name: Build
-        run: |
-          cargo build --release --target x86_64-unknown-linux-musl
-          strip ./target/x86_64-unknown-linux-musl/release/skauthd
+        run: cargo build --release --target x86_64-unknown-linux-musl
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
-          name: skauthd
+          name: skauthd-linux
           path: ./target/x86_64-unknown-linux-musl/release/skauthd
+  build-macos:
+    name: Build (macOS)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+      - name: Build
+        run: cargo build --release
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: skauthd-macos
+          path: ./target/release/skauthd
