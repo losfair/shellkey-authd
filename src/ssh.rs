@@ -62,7 +62,7 @@ impl SSHAgentHandler for Handler {
     Self
   }
 
-  fn identities(&mut self) -> HandleResult<Response> {
+  fn identities(&self) -> HandleResult<Response> {
     trace!("Handler::identities");
     let config = CONFIG.lock();
     let config = config.as_ref().unwrap();
@@ -79,7 +79,7 @@ impl SSHAgentHandler for Handler {
   }
 
   fn sign_request(
-    &mut self,
+    &self,
     pubkey: Vec<u8>,
     data: Vec<u8>,
     _flags: u32,

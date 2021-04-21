@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }
-ssh_agent = { git = "https://github.com/ntrippar/ssh-agent", rev = "d3b34af6f4475cbc2257c8f800ea5b3d997a1720" }
+ssh_agent = { git = "https://github.com/losfair/ssh-agent", rev = "4173d3cd5dd0c727cd7e5946d0695c9bd815a4b7" }
 parking_lot = "0.11"
 base64 = "0.13"
 sha2 = "0.9"
