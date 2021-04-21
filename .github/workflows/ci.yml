@@ -28,14 +28,14 @@ jobs:
     strategy:
       matrix:
         platform: [
-          { target: "aarch64-unknown-linux-musl", image_tag: "aarch64-musl" },
-          { target: "armv7-unknown-linux-musleabihf", image_tag: "armv7-musleabihf" },
-          { target: "i586-unknown-linux-musl", image_tag: "i586-musl" },
-          { target: "x86_64-unknown-linux-musl", image_tag: "x86_64-musl" },
+          { target: "aarch64-unknown-linux-musl", image_tag: "aarch64-musl", docker_namespace: "messense" },
+          { target: "armv7-unknown-linux-musleabihf", image_tag: "armv7-musleabihf", docker_namespace: "benfred" },
+          { target: "i586-unknown-linux-musl", image_tag: "i586-musl", docker_namespace: "messense" },
+          { target: "x86_64-unknown-linux-musl", image_tag: "x86_64-musl", docker_namespace: "messense" },
         ]
     runs-on: ubuntu-latest
     container:
-      image: docker://benfred/rust-musl-cross:${{ matrix.platform.image_tag }}
+      image: docker://${{ matrix.platform.docker_namespace }}/rust-musl-cross:${{ matrix.platform.image_tag }}
       env:
         RUSTUP_HOME: /root/.rustup
         CARGO_HOME: /root/.cargo
