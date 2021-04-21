@@ -26,24 +26,6 @@ jobs:
         with:
           name: skauthd-linux
           path: ./target/x86_64-unknown-linux-musl/release/skauthd
-  build-linux32:
-    name: Build (Linux 32bit)
-    runs-on: ubuntu-latest
-    container:
-      image: docker://benfred/rust-musl-cross:i686-musl
-      env:
-        RUSTUP_HOME: /root/.rustup
-        CARGO_HOME: /root/.cargo
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build
-        run: cargo build --release --target i686-unknown-linux-musl
-      - name: Upload binary
-        uses: actions/upload-artifact@v2
-        with:
-          name: skauthd-linux32
-          path: ./target/i686-unknown-linux-musl/release/skauthd
   build-macos:
     name: Build (macOS)
     runs-on: macos-latest
@@ -63,3 +45,28 @@ jobs:
         with:
           name: skauthd-macos
           path: ./target/release/skauthd
+  build-musl-matrix:
+    name: Build (Musl Matrix)
+    strategy:
+      matrix:
+        platform: [
+          { target: "aarch64-unknown-linux-musl", image_tag: "aarch64-musl" },
+          { target: "armv7-unknown-linux-musleabihf", image_tag: "armv7-musleabihf" },
+          { target: "i686-unknown-linux-musl", image_tag: "i686-musl" },
+        ]
+    runs-on: ubuntu-latest
+    container:
+      image: docker://benfred/rust-musl-cross:${{ matrix.platform.image_tag }}
+      env:
+        RUSTUP_HOME: /root/.rustup
+        CARGO_HOME: /root/.cargo
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: cargo build --release --target ${{ matrix.platform.target }}
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: skauthd-${{ matrix.platform.target }}
+          path: ./target/${{ matrix.platform.target }}/release/skauthd
