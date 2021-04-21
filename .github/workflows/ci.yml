@@ -17,10 +17,14 @@ jobs:
           toolchain: nightly
           override: true
           target: x86_64-unknown-linux-musl
+      - name: Install musl-tools
+        run: sudo apt install -y musl-tools
       - name: Build
-        run: cargo build --release --target x86_64-unknown-linux-musl
+        run: |
+          cargo build --release --target x86_64-unknown-linux-musl
+          strip ./target/x86_64-unknown-linux-musl/release/skauthd
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
           name: skauthd
-          path: target/release/skauthd
+          path: ./target/x86_64-unknown-linux-musl/release/skauthd
