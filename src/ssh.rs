@@ -126,7 +126,8 @@ impl SSHAgentHandler for Handler {
       key_id,
       request_id: init_response.request_id.clone(),
     };
-    let signature = loop {
+    let mut signature = None;
+    for _ in 0..10 {
       std::thread::sleep(Duration::from_secs(3));
       let res = client
         .post(&format!("{}/v1/auth/poll", api_prefix))
@@ -141,12 +142,17 @@ impl SSHAgentHandler for Handler {
         serde_json::from_slice(&res.bytes().map_err(|_| "poll_auth body error")?)
           .map_err(|_| "poll_auth response body decode failed")?;
       if let Some(x) = poll_response.signature {
-        break base64::decode(&x).map_err(|_| "poll_auth returned invalid signature")?;
+        signature = Some(base64::decode(&x).map_err(|_| "poll_auth returned invalid signature")?);
+        break;
       }
     };
+
+    let signature = signature.ok_or_else(|| "poll timeout")?;
+    info!("polling returned signature: {:?}", signature);
+
     Ok(Response::SignResponse {
       algo_name: key_type,
-      signature,
+      signature: signature,
     })
   }
 }
