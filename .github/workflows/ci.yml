@@ -29,25 +29,21 @@ jobs:
   build-linux32:
     name: Build (Linux 32bit)
     runs-on: ubuntu-latest
+    container:
+      image: docker://benfred/rust-musl-cross:i686-musl
+      env:
+        RUSTUP_HOME: /root/.rustup
+        CARGO_HOME: /root/.cargo
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: nightly
-          override: true
-          target: i586-unknown-linux-musl
-      - name: Install musl-tools
-        run: sudo apt install -y musl-tools
       - name: Build
-        run: cargo build --release --target i586-unknown-linux-musl
+        run: cargo build --release --target i686-unknown-linux-musl
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
           name: skauthd-linux32
-          path: ./target/i586-unknown-linux-musl/release/skauthd
+          path: ./target/i686-unknown-linux-musl/release/skauthd
   build-macos:
     name: Build (macOS)
     runs-on: macos-latest
