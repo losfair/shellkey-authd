@@ -35,7 +35,7 @@ jobs:
         ]
     runs-on: ubuntu-latest
     container:
-      image: docker://messense/rust-musl-cross:${{ matrix.platform.image_tag }}
+      image: docker://benfred/rust-musl-cross:${{ matrix.platform.image_tag }}
       env:
         RUSTUP_HOME: /root/.rustup
         CARGO_HOME: /root/.cargo
