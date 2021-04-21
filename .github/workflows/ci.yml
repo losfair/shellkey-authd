@@ -63,3 +63,23 @@ jobs:
         with:
           name: skauthd-macos
           path: ./target/release/skauthd
+  build-macos-aarch64:
+    name: Build (macOS AArch64)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+          target: aarch64-apple-darwin
+      - name: Build
+        run: cargo build --release --target aarch64-apple-darwin
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: skauthd-macos-aarch64
+          path: ./target/aarch64-apple-darwin/release/skauthd
